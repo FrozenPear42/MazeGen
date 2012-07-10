@@ -1,7 +1,9 @@
 package com.bugfullabs.mazegen;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -24,6 +26,8 @@ import javax.swing.WindowConstants;
 
 public class Main{
 	
+	
+	//Main Frame
 	public static JFrame mFrame;
 	public static JLabel jLabel1;
 	public static JLabel jLabel2;
@@ -42,12 +46,68 @@ public class Main{
 	public static JTextField mTFHeight;
 
 	
+	//Drawing Frame
+	public static JFrame mDrawingFrame;
+	public static DrawingPanel mDrawingPanel;
+	
+	
+	public static final int MARGIN = 50;
+	public static final int FIELD_WIDTH = 48;
+	public static final int FIELD_HEIGHT = 48;
+	
+	
+	public static int mWidth = 0;
+	public static int mHeight = 0;
+	public static int mMinSteps = 0;
+	
+	public static boolean running = false;
 	
 	public static void main(String[] args){
+		
+		//main frame
 		mFrame = new JFrame();
-	    initGUI();
+			    
+		//drawing frame
+	    mDrawingFrame = new JFrame();
+	    mDrawingFrame.setName("Maze");
+		
+		initGUI();
 	   
-		}
+	    mButtonStart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			if(!running)
+			{
+				try{
+				mWidth = Integer.parseInt(mTFWidth.getText());
+				mHeight = Integer.parseInt(mTFHeight.getText());
+				mMinSteps = Integer.parseInt(mTFDiff.getText());
+				mDrawingFrame.setSize(MARGIN + (mWidth * FIELD_WIDTH), MARGIN + (mHeight * FIELD_HEIGHT));
+				mDrawingFrame.setVisible(true);
+				
+				mButtonStart.setText("Stop!");
+				
+				
+				running = true;
+				}catch (Exception e){
+					//TODO: Warning Dialog
+				}
+				
+			}else{
+			
+			//TODO: Stop option	
+			running = false;
+			mButtonStart.setText("Start!");
+			mDrawingFrame.setVisible(false);
+			}
+			
+			}
+			
+			
+		});
+	    
+	    }
 	
 	
 	
