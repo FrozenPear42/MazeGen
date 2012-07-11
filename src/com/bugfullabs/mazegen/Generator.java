@@ -68,33 +68,33 @@ public class Generator{
 		
 		switch(tmp){
 		case 0:
-			if(last == 0)
+			if(last == 0 || (tY-1) <= 0)
 			{
 				tC++;
 				continue;
 			}
 			board[tX][tY].setUp(false);
-			nextField(tX, tY+1, UP, -1);	
+			nextField(tX, tY-1, UP, 12);	
 			last = 0;
 			break;
 		case 1:
-			if(last == 1)
+			if(last == 1 || (tX-1) < 0)
 			{
 				tC++;
 				continue;
 			}
 			board[tX][tY].setLeft(false);
-			nextField(tX-1, tY, LEFT, -1);
+			nextField(tX-1, tY, LEFT, 12);
 			last = 1;
 			break;
 		case 2:
-			if(last == 2)
+			if(last == 2 || (tX+1) >= w)
 			{
 				tC++;
 				continue;
 			}
 			board[tX][tY].setRight(false);
-			nextField(tX+1, tY, RIGHT, -1);
+			nextField(tX+1, tY, RIGHT, 12);
 			last = 2;
 			break;	
 		}
@@ -161,9 +161,19 @@ public class Generator{
 
 private void nextField(int tX, int tY, int pos, int n){
 	
+	System.out.printf("NEXT: tX: " + Integer.toString(tX)+ "tY: " + Integer.toString(tY) + " n: " + Integer.toString(n) + "\n");
+	
+	if(n <= 0)
+		return;
+	
+	if(board[tX][tY].isEdited()){
+	return;
+	}
+	
 	int tC;
 	int tmp;
-	
+	int last = 10; //not 0, 1, 2, 3
+
 	tC = abs(r.nextInt()%2);     //Counter of deleted 'modules'
 
 	switch(pos){
@@ -181,31 +191,54 @@ private void nextField(int tX, int tY, int pos, int n){
 		break;
 	}
 	
-	for(; tC < 0; tC--){
+	for(; tC >= 0; tC--){
 		r.setSeed(System.currentTimeMillis());
 		
 		tmp = abs(r.nextInt()%4);
 		
 		switch(tmp){
 		case 0:
-			if(pos != DOWN){
-			board[tX][tY].setUp(false);
-			
+			if(pos != DOWN && last != UP && (tY-1) >= 0){
+			last = UP;
+			System.out.printf("SUP");
+			board[tX][tY].setUp(false);	
+			nextField(tX, tY-1, UP, n-1);
+			}else{
+			tC++;
+			continue;
 			}
 			break;
 		case 1:
-			if(pos != RIGHT){
+			if(pos != RIGHT && last != LEFT && (tX-1) >= 0){
+			last = LEFT;
+			System.out.printf("SLEFT");
 			board[tX][tY].setLeft(false);
+			nextField(tX-1, tY, LEFT, n-1);
+			}else{
+			tC++;
+			continue;
 			}
 			break;
 		case 2:
-			if(pos != LEFT){
+			if(pos != LEFT && last != RIGHT && (tX+1) < w){
+			last = RIGHT;
+			System.out.printf("SRIGHT");
 			board[tX][tY].setRight(false);
+			nextField(tX+1, tY, RIGHT, n-1);
+			}else{
+			tC++;
+			continue;
 			}
 			break;
 		case 3:
-			if(pos != UP){
+			if(pos != UP && last != DOWN && (tY+1) < h){
+			last = DOWN;
+			System.out.printf("SDOWN");
 			board[tX][tY].setDown(false);
+			nextField(tX, tY+1, DOWN, n-1);
+			}else{
+			tC++;
+			continue;
 			}
 			break;	
 		}
