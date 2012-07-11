@@ -1,22 +1,22 @@
 package com.bugfullabs.mazegen;
 
-import java.util.Random;
 
 public class Field {
 	
-	private static Random rand;
 	private boolean left = false;
 	private boolean right = false;
 	private boolean up = false;
 	private boolean down = false;
+	private boolean edited = false;
 	
+	private int opens = 0;
 	
 	public Field(){
 		left = true;
 		right = true;
 		up = true;
 		down = true;
-		rand = new Random();
+		edited = false;
 	}
 	
 	public Field(boolean l, boolean r, boolean u, boolean d){
@@ -24,7 +24,7 @@ public class Field {
 		right = r;
 		up = u;
 		down = d;
-		rand = new Random();
+		edited = false;
 	}
 	
 	
@@ -44,7 +44,16 @@ public class Field {
 		return down;
 	}
 	
+	public boolean isEdited(){
+		return edited;
+	}
+	
+	public void setEdited(boolean b){
+		edited = b;
+	}
+	
 	public void set(boolean l, boolean r, boolean u, boolean d){
+		edited = true;
 		left = l;
 		right = r;
 		up = u;
@@ -52,22 +61,55 @@ public class Field {
 	}
 	
 	public void setUp(boolean x){
+		edited = true;
+		
+		if(x == false){
+		opens++;	
+		}else{
+		opens--;	
+		}
+		
 		up = x;
 	}
 	
 	public void setDown(boolean x){
+		edited = true;
+		if(x == false){
+		opens++;	
+		}else{
+		opens--;	
+		}
 		down = x;
 	}
 	
 	public void setRight(boolean x){
+		edited = true;
+		if(x == false){
+		opens++;	
+		}else{
+		opens--;	
+		}
 		right = x;
 	}
 	
 	public void setLeft(boolean x){
+		edited = true;
+		if(x == false){
+		opens++;	
+		}else{
+		opens--;	
+		}
 		left = x;
 	}
 	
 	
+	public int getOpens(){
+		return opens;
+	}
+
+	
+//OLD GENERATOR - NOT WORKING
+/*	
 	public static Field generateNext(Field f){
 		
 		Field newField = new Field();
@@ -107,16 +149,6 @@ public class Field {
 		
 		return f;	
 	}
-
-	
-	@SuppressWarnings("unused")
-	private int abs(int a)	
-	{	
-	if(a >= 0)
-		return a;
-	else
-	return -a;
-	}	
-
+*/
 	
 }

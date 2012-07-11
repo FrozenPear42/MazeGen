@@ -52,8 +52,8 @@ public class Main{
 	
 	
 	public static final int MARGIN = 50;
-	public static final int FIELD_WIDTH = 48;
-	public static final int FIELD_HEIGHT = 48;
+	public static final int FIELD_WIDTH = 32;
+	public static final int FIELD_HEIGHT = 32;
 	
 	
 	public static int mWidth = 0;
