@@ -44,7 +44,7 @@ public class Main{
 	public static JMenu mMenuHelp;
 	public static JTextField mTFWidth;
 	public static JTextField mTFHeight;
-
+	
 	
 	//Drawing Frame
 	public static JFrame mDrawingFrame;
@@ -61,6 +61,8 @@ public class Main{
 	public static int mMinSteps = 0;
 	
 	public static boolean running = false;
+	
+	public static Generator gen;
 	
 	public static void main(String[] args){
 		
@@ -88,9 +90,11 @@ public class Main{
 				
 				mButtonStart.setText("Stop!");
 				
+				gen = new Generator(mWidth, mHeight, mMinSteps, 50);
+				gen.start();
 				
 				running = true;
-				}catch (Exception e){
+				}catch (NumberFormatException e){
 					//TODO: Warning Dialog
 				}
 				
@@ -98,6 +102,7 @@ public class Main{
 			
 			//TODO: Stop option	
 			running = false;
+			mDrawingFrame.remove(mDrawingPanel);
 			mButtonStart.setText("Start!");
 			mDrawingFrame.setVisible(false);
 			}
