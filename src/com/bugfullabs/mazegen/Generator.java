@@ -20,6 +20,7 @@ public class Generator{
 	public static final int RIGHT = 2;
 	public static final int DOWN = 3;
 	
+	public static final int RE_LVL = 100;
 	
 	
 	Generator(int width, int height, int minSteps, int offset){
@@ -48,7 +49,9 @@ public class Generator{
 	int tY;
 	int tC;
 	int tmp;
+	
 	int last = 10; //not 0, 1, 2
+	
 	
 	tX = abs(r.nextInt()%(w-1)); //Start X
 	tY = h-1;						 //Start Y
@@ -61,9 +64,7 @@ public class Generator{
 	for(; tC >= 0; tC--){
 		
 		System.out.printf(Integer.toString(tC) + "\n");
-		
-		r.setSeed(System.currentTimeMillis());
-		
+			
 		tmp = abs(r.nextInt()%3);
 		
 		switch(tmp){
@@ -74,7 +75,7 @@ public class Generator{
 				continue;
 			}
 			board[tX][tY].setUp(false);
-			nextField(tX, tY-1, UP, 12);	
+			nextField(tX, tY-1, UP, RE_LVL);	
 			last = 0;
 			break;
 		case 1:
@@ -84,7 +85,7 @@ public class Generator{
 				continue;
 			}
 			board[tX][tY].setLeft(false);
-			nextField(tX-1, tY, LEFT, 12);
+			nextField(tX-1, tY, LEFT, RE_LVL);
 			last = 1;
 			break;
 		case 2:
@@ -94,7 +95,7 @@ public class Generator{
 				continue;
 			}
 			board[tX][tY].setRight(false);
-			nextField(tX+1, tY, RIGHT, 12);
+			nextField(tX+1, tY, RIGHT, RE_LVL);
 			last = 2;
 			break;	
 		}
@@ -113,7 +114,7 @@ public class Generator{
 		
 		if(board[i][j].getUp()){
 		
-		System.out.printf("UP X:" + Integer.toString(i) + " Y: " + Integer.toString(j) + "\n");
+		//System.out.printf("UP X:" + Integer.toString(i) + " Y: " + Integer.toString(j) + "\n");
 			
 		g2.drawLine(Main.MARGIN + i*Main.FIELD_WIDTH,
 				    Main.MARGIN + j*Main.FIELD_HEIGHT,
@@ -122,7 +123,7 @@ public class Generator{
 		}
 		if(board[i][j].getDown()){
 		
-		System.out.printf("DOWN X:" + Integer.toString(i) + " Y: " + Integer.toString(j) + "\n");		
+		//System.out.printf("DOWN X:" + Integer.toString(i) + " Y: " + Integer.toString(j) + "\n");		
 			
 		g2.drawLine(Main.MARGIN + i*Main.FIELD_WIDTH,
 				    Main.MARGIN + (j+1)*Main.FIELD_HEIGHT,
@@ -131,7 +132,7 @@ public class Generator{
 		}	
 		if(board[i][j].getLeft()){
 			
-		System.out.printf("LEFT X:" + Integer.toString(i) + " Y: " + Integer.toString(j) + "\n");	
+		//System.out.printf("LEFT X:" + Integer.toString(i) + " Y: " + Integer.toString(j) + "\n");	
 			
 		g2.drawLine(Main.MARGIN + i*Main.FIELD_WIDTH,
 				    Main.MARGIN + j*Main.FIELD_HEIGHT,
@@ -140,7 +141,7 @@ public class Generator{
 		}
 		if(board[i][j].getRight()){
 			
-		System.out.printf("RIGHT X:" + Integer.toString(i) + " Y: " + Integer.toString(j) + "\n");	
+		//System.out.printf("RIGHT X:" + Integer.toString(i) + " Y: " + Integer.toString(j) + "\n");	
 			
 		g2.drawLine(Main.MARGIN + (i+1)*Main.FIELD_WIDTH,
 				    Main.MARGIN + j*Main.FIELD_HEIGHT,
@@ -163,8 +164,10 @@ private void nextField(int tX, int tY, int pos, int n){
 	
 	System.out.printf("NEXT: tX: " + Integer.toString(tX)+ "tY: " + Integer.toString(tY) + " n: " + Integer.toString(n) + "\n");
 	
+	
 	if(n <= 0)
 		return;
+	
 	
 	if(board[tX][tY].isEdited()){
 	return;
@@ -172,76 +175,143 @@ private void nextField(int tX, int tY, int pos, int n){
 	
 	int tC;
 	int tmp;
-	int last = 10; //not 0, 1, 2, 3
+	
+	boolean is0 = false;
+	boolean is1 = false;
+	boolean is2 = false;
+	boolean is3 = false;
+	
 
 	tC = abs(r.nextInt()%2);     //Counter of deleted 'modules'
 
 	switch(pos){
 	case UP:
+		is3 = true;
 		board[tX][tY].setDown(false);
 		break;
 	case DOWN:
+		is0 = true;
 		board[tX][tY].setUp(false);
 		break;
 	case LEFT:
+		is2 = true;
 		board[tX][tY].setRight(false);
 		break;
 	case RIGHT:
+		is1 = true;
 		board[tX][tY].setLeft(false);
 		break;
 	}
 	
+	
 	for(; tC >= 0; tC--){
-		r.setSeed(System.currentTimeMillis());
-		
+		//System.out.printf("tC: " + Integer.toString(tC) + ".\n");
 		tmp = abs(r.nextInt()%4);
+		
+		if(is0 && is1 && is2 && is3){
+			System.out.printf("RETURN!!!\n");
+			return;
+		}
 		
 		switch(tmp){
 		case 0:
-			if(pos != DOWN && last != UP && (tY-1) >= 0){
-			last = UP;
+			if(!is0){
+			
+			System.out.printf("is0 \n");
+				
+			is0 = true;
+			
+			if((tY-1) >= 0){
+			
+			
+			if(board[tX][tY-1].isEdited()){
+			tC++;
+			continue;
+			}
+			
 			System.out.printf("SUP");
 			board[tX][tY].setUp(false);	
 			nextField(tX, tY-1, UP, n-1);
+			}
 			}else{
 			tC++;
 			continue;
 			}
 			break;
+			
 		case 1:
-			if(pos != RIGHT && last != LEFT && (tX-1) >= 0){
-			last = LEFT;
+			if(!is1){
+			
+			System.out.printf("is1 \n");
+				
+			is1 = true;	
+			
+			if((tX-1) >= 0){
+			
+			if(board[tX-1][tY].isEdited()){
+			tC++;	
+			continue;
+			}
+			
 			System.out.printf("SLEFT");
 			board[tX][tY].setLeft(false);
 			nextField(tX-1, tY, LEFT, n-1);
+			}
 			}else{
 			tC++;
 			continue;
 			}
 			break;
+			
 		case 2:
-			if(pos != LEFT && last != RIGHT && (tX+1) < w){
-			last = RIGHT;
+			if(!is2){
+			
+			System.out.printf("is2 \n");	
+				
+			is2 = true;
+			
+			if( (tX+1) < w){
+			
+			if(board[tX+1][tY].isEdited()){
+			tC++;
+			continue;
+			}
 			System.out.printf("SRIGHT");
 			board[tX][tY].setRight(false);
 			nextField(tX+1, tY, RIGHT, n-1);
+			}
 			}else{
 			tC++;
 			continue;
 			}
 			break;
+			
 		case 3:
-			if(pos != UP && last != DOWN && (tY+1) < h){
-			last = DOWN;
+			if(!is3){
+				
+			System.out.printf("is3 \n");	
+				
+			is3 = true;
+			
+			if((tY+1) < h){
+			
+			if(board[tX][tY+1].isEdited()){
+			tC++;
+			continue;
+			}
 			System.out.printf("SDOWN");
 			board[tX][tY].setDown(false);
 			nextField(tX, tY+1, DOWN, n-1);
+			}
 			}else{
 			tC++;
 			continue;
 			}
 			break;	
 		}
+		
+		
+		
 	}
 	
 	
@@ -250,10 +320,10 @@ private void nextField(int tX, int tY, int pos, int n){
 		
 private int abs(int a)	
 {	
-if(a >= 0)
-	return a;
-else
-return -a;
+	if(a >= 0)
+		return a;
+	else
+	return -a;
 }	
 
 
