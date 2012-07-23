@@ -52,8 +52,8 @@ public class Main{
 	
 	
 	public static final int MARGIN = 50;
-	public static final int FIELD_WIDTH = 10;
-	public static final int FIELD_HEIGHT = 10;
+	public static final int FIELD_WIDTH = 5;
+	public static final int FIELD_HEIGHT = 5;
 	
 	
 	public static int mWidth = 0;
@@ -85,7 +85,8 @@ public class Main{
 				mWidth = Integer.parseInt(mTFWidth.getText());
 				mHeight = Integer.parseInt(mTFHeight.getText());
 				mMinSteps = Integer.parseInt(mTFDiff.getText());
-				mDrawingFrame.setSize(MARGIN + (mWidth * FIELD_WIDTH), MARGIN + (mHeight * FIELD_HEIGHT));
+				mDrawingFrame.setLocation(180, 0);
+				mDrawingFrame.setSize(2*MARGIN + (mWidth * FIELD_WIDTH), 2*MARGIN + (mHeight * FIELD_HEIGHT));
 				mDrawingFrame.setVisible(true);
 				
 				mButtonStart.setText("Stop!");

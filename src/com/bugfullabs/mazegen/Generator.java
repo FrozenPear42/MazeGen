@@ -8,12 +8,12 @@ public class Generator{
 	
 	private int w;
 	private int h;
-	@SuppressWarnings("unused")
 	private int mS;
 	@SuppressWarnings("unused")
 	private int off;
 	private Random r;
 	private Field board[][];
+	private boolean isExit = false;
 	
 	public static final int UP = 0;
 	public static final int LEFT = 1;
@@ -21,7 +21,7 @@ public class Generator{
 	public static final int DOWN = 3;
 	
 	public static final int RE_LVL = 100;
-	
+	public static final int TRY = 10;
 	
 	Generator(int width, int height, int minSteps, int offset){
 		w = width;
@@ -41,9 +41,10 @@ public class Generator{
 	
 	
 	
-	@SuppressWarnings("serial")
 	public void start(){
 	r.setSeed(System.currentTimeMillis());
+	
+	int cnt = 0;
 	
 	int tX;
 	int tY;
@@ -52,7 +53,28 @@ public class Generator{
 	
 	int last = 10; //not 0, 1, 2
 	
+	isExit = false;
 	
+	do{
+		cnt++;
+		
+		if(cnt > TRY){
+			//TODO: ERROR DIALOG
+			return;
+		}
+		
+		
+		last = 10;
+		
+		board = new Field[w][h];
+		
+		for(int i = 0; i < w; i++){
+			for(int j = 0; j < h; j++){
+				board[i][j] = new Field();
+			}
+		}
+
+		
 	tX = abs(r.nextInt()%(w-1)); //Start X
 	tY = h-1;						 //Start Y
 	tC = abs(r.nextInt()%2);     //Counter of deleted 'modules'
@@ -75,7 +97,7 @@ public class Generator{
 				continue;
 			}
 			board[tX][tY].setUp(false);
-			nextField(tX, tY-1, UP, RE_LVL);	
+			nextField(tX, tY-1, UP, RE_LVL, 0);	
 			last = 0;
 			break;
 		case 1:
@@ -85,7 +107,7 @@ public class Generator{
 				continue;
 			}
 			board[tX][tY].setLeft(false);
-			nextField(tX-1, tY, LEFT, RE_LVL);
+			nextField(tX-1, tY, LEFT, RE_LVL, 0);
 			last = 1;
 			break;
 		case 2:
@@ -95,12 +117,19 @@ public class Generator{
 				continue;
 			}
 			board[tX][tY].setRight(false);
-			nextField(tX+1, tY, RIGHT, RE_LVL);
+			nextField(tX+1, tY, RIGHT, RE_LVL, 0);
 			last = 2;
 			break;	
 		}
+		
 	}
 	
+	}while(!isExit);
+	draw();
+	}
+	
+	@SuppressWarnings("serial")
+	private void draw(){
 	
 	Main.mDrawingPanel = new DrawingPanel(){
 		@Override
@@ -160,12 +189,12 @@ public class Generator{
 	
 }
 
-private void nextField(int tX, int tY, int pos, int n){
+private void nextField(int tX, int tY, int pos, int n, int len){
 	
 	System.out.printf("NEXT: tX: " + Integer.toString(tX)+ "tY: " + Integer.toString(tY) + " n: " + Integer.toString(n) + "\n");
 	
 	
-	if(n <= 0)
+	if(n == 0)
 		return;
 	
 	
@@ -183,7 +212,8 @@ private void nextField(int tX, int tY, int pos, int n){
 	
 
 	tC = abs(r.nextInt()%2);     //Counter of deleted 'modules'
-
+	
+	
 	switch(pos){
 	case UP:
 		is3 = true;
@@ -202,6 +232,37 @@ private void nextField(int tX, int tY, int pos, int n){
 		board[tX][tY].setLeft(false);
 		break;
 	}
+	
+	if(!isExit ){
+	if(tX == 0 || tX == w-1 || tY == 0 || tY == h-1){
+		if(len >= mS){
+			isExit = true;
+			
+			if(tX == 0)
+				board[tX][tY].setLeft(false);
+			
+			if(tX == w-1)
+				board[tX][tY].setRight(false);
+			
+			if(tY == 0)
+				board[tX][tY].setUp(false);
+			
+			if(tY == h-1)
+				board[tX][tY].setDown(false);
+			
+			
+			return;
+		}
+	}
+	}
+	
+	int lvl = 0;
+	
+	if(isExit)
+		lvl = -1;
+	else
+	    lvl = n-1;
+
 	
 	
 	for(; tC >= 0; tC--){
@@ -231,7 +292,7 @@ private void nextField(int tX, int tY, int pos, int n){
 			
 			System.out.printf("SUP");
 			board[tX][tY].setUp(false);	
-			nextField(tX, tY-1, UP, n-1);
+			nextField(tX, tY-1, UP, lvl, len+1);
 			}
 			}else{
 			tC++;
@@ -255,7 +316,7 @@ private void nextField(int tX, int tY, int pos, int n){
 			
 			System.out.printf("SLEFT");
 			board[tX][tY].setLeft(false);
-			nextField(tX-1, tY, LEFT, n-1);
+			nextField(tX-1, tY, LEFT, lvl, len+1);
 			}
 			}else{
 			tC++;
@@ -278,7 +339,7 @@ private void nextField(int tX, int tY, int pos, int n){
 			}
 			System.out.printf("SRIGHT");
 			board[tX][tY].setRight(false);
-			nextField(tX+1, tY, RIGHT, n-1);
+			nextField(tX+1, tY, RIGHT, lvl, len+1);
 			}
 			}else{
 			tC++;
@@ -301,7 +362,7 @@ private void nextField(int tX, int tY, int pos, int n){
 			}
 			System.out.printf("SDOWN");
 			board[tX][tY].setDown(false);
-			nextField(tX, tY+1, DOWN, n-1);
+			nextField(tX, tY+1, DOWN, lvl, len+1);
 			}
 			}else{
 			tC++;
