@@ -2,4 +2,6 @@ MazeGen
 
 Simple Java Maze Generator
 
-(c)2012 Bugfullabs
+Because of recursive method of "way searching" you have to increase VM stack size by adding -Xss12m to command eg. java -Xss12m -jar mazegen.jar
+
+(c)2012 Wojciech Grszka, Bugfullabs

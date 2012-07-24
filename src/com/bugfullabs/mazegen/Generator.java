@@ -38,7 +38,7 @@ public class Generator{
 		}
 		
 		r = new Random();
-		RE_LVL = 50 + mS;
+		RE_LVL = 100 + mS;
 		
 		
 	}
@@ -82,7 +82,7 @@ public class Generator{
 		
 	tX = abs(r.nextInt()%(w-1)); //Start X
 	tY = h-1;						 //Start Y
-	tC = abs(r.nextInt()%2);     //Counter of deleted 'modules'
+	tC = 1;// abs(r.nextInt()%2);     //Counter of deleted 'modules'
 	
 	System.out.printf("Start tX: " + Integer.toString(tX) + " tY: " + Integer.toString(tY)+ " tC: "+ Integer.toString(tC) + "\n");
 	
@@ -130,6 +130,11 @@ public class Generator{
 	}
 	
 	}while(!isExit);
+	
+	
+	fixUneditedFields();
+	
+	
 	finished = true;
 	draw();
 	}
@@ -218,7 +223,7 @@ private void nextField(int tX, int tY, int pos, int n, int len){
 	boolean is3 = false;
 	
 
-	tC = abs(r.nextInt()%2);     //Counter of deleted 'modules'
+	tC = abs(r.nextInt()%3);     //Counter of deleted 'modules'
 	
 	
 	switch(pos){
@@ -385,6 +390,105 @@ private void nextField(int tX, int tY, int pos, int n, int len){
 	
 }
 	
+
+
+private void fixUneditedFields(){
+	
+	int s = 10;
+	
+	for(int i = 0; i < w; i++){
+		for(int j = 0; j < h; j++){
+			if(!board[i][j].isEdited()){
+			
+				if(i > 0 && i < w-1 && j > 0 && j < h-1){
+				
+						  if(board[i-1][j].isEdited()){
+					    
+						board[i-1][j].setRight(false);
+						board[i][j].setLeft(false);
+						
+							  
+					}else if(board[i+1][j].isEdited()){
+						
+						board[i+1][j].setLeft(false);
+						board[i][j].setRight(false);
+						
+					}else if(board[i][j-1].isEdited()){
+						
+						board[i][j-1].setDown(false);
+						board[i][j].setUp(false);
+						
+					}else if(board[i][j+1].isEdited()){
+						
+						board[i][j+1].setUp(false);
+						board[i][j].setDown(false);
+						
+					}else{
+					//THAT SHOULD NOT HAPPENED	
+					//IF DO I'DONT KOW WHAT TO DO
+					}
+					
+				}else{
+				
+				
+				if(i-1 >= 0){
+					if(board[i-1][j].isEdited())
+						s = 0;
+				}else
+				
+				if(i+1 < w){
+					if(board[i+1][j].isEdited())
+						s = 1;
+				}else
+				
+				if(j-1 >= 0){
+					if(board[i][j-1].isEdited())
+						s = 2;
+				}else 
+				
+				if(j+1 < h){
+					if(board[i][j+1].isEdited())
+						s = 3;
+				}
+				
+				
+				switch(s){
+				
+				case 0:
+					board[i-1][j].setRight(false);
+					board[i][j].setLeft(false);
+					break;
+				
+				case 1:
+					board[i+1][j].setLeft(false);
+					board[i][j].setRight(false);	
+					break;
+				
+				case 2:
+					board[i][j-1].setDown(false);
+					board[i][j].setUp(false);
+					break;
+					
+				case 3:
+					board[i][j+1].setUp(false);
+					board[i][j].setDown(false);
+					break;
+					
+				}
+				
+			}
+			s = 10;	
+			}
+		}
+	}
+	
+	
+	
+}
+
+
+
+
 
 public boolean isFinished(){
 	return finished;

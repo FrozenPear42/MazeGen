@@ -50,6 +50,13 @@ public class PrintablePage implements Printable{
 			if(tmp < f_size)
 				f_size = tmp;
 			
+			if (f_size <= 0)
+				f_size = 1;
+			
+			x_margin = (int) ((pf.getImageableWidth()-(w*f_size))/2);
+			y_margin = (int) ((pf.getImageableHeight()-(h*f_size))/2);
+			
+			
 			g2.translate (pf.getImageableX (), pf.getImageableY ());
 			
 			

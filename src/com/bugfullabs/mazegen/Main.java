@@ -4,6 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterJob;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -84,11 +87,20 @@ public class Main{
 			if(gen.isFinished()){	
 			PrinterJob printerJob = PrinterJob.getPrinterJob();
 			
+			printerJob.setJobName("MazeGen");
 			printerJob.setPrintable(new PrintablePage(gen.getBoard(), gen.getWidth(), gen.getHeight()));
+			
+			PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+			
+			if(gen.getWidth() > gen.getHeight()){
+				aset.add(OrientationRequested.LANDSCAPE);
+			}else{
+				aset.add(OrientationRequested.PORTRAIT);	
+			}
 			
 			if(printerJob.printDialog()){
 				try{
-				printerJob.print();	
+				printerJob.print(aset);	
 				}catch(Exception PrintException){
 					PrintException.printStackTrace();
 				}
@@ -164,13 +176,14 @@ public class Main{
 					mMenuBar.add(mMenuFile);
 					mMenuFile.setText("File");
 					{
-						mExit = new JMenuItem();
-						mMenuFile.add(mExit);
-						mExit.setText("Exit");
-					
+						
 						mPrint = new JMenuItem();
 						mMenuFile.add(mPrint);
 						mPrint.setText("Print");
+						
+						mExit = new JMenuItem();
+						mMenuFile.add(mExit);
+						mExit.setText("Exit");
 					
 					}
 				}
