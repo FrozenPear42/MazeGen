@@ -71,6 +71,21 @@ public class Main{
 	
 	public static void main(String[] args){
 		
+	/*	if(args.length <= 0){
+		String path = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
+		System.out.printf(path);
+		try {
+			Runtime.getRuntime().exec("java -Xss12m -jar " + path + " new");
+			System.exit(0);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		}else{
+		*/
+		
+		
 		//main frame
 		mFrame = new JFrame();
 			    
@@ -155,7 +170,7 @@ public class Main{
 			
 			
 		});
-	    
+		//}
 	    }
 	
 	
