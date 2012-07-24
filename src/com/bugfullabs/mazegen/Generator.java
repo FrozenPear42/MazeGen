@@ -14,14 +14,15 @@ public class Generator{
 	private Random r;
 	private Field board[][];
 	private boolean isExit = false;
+	public boolean finished = false;
+	private int RE_LVL;
 	
 	public static final int UP = 0;
 	public static final int LEFT = 1;
 	public static final int RIGHT = 2;
 	public static final int DOWN = 3;
 	
-	public static final int RE_LVL = 100;
-	public static final int TRY = 10;
+	public static final int TRY = 100;
 	
 	Generator(int width, int height, int minSteps, int offset){
 		w = width;
@@ -37,6 +38,9 @@ public class Generator{
 		}
 		
 		r = new Random();
+		RE_LVL = 50 + mS;
+		
+		
 	}
 	
 	
@@ -56,6 +60,7 @@ public class Generator{
 	isExit = false;
 	
 	do{
+		Main.mProgress.setValue((cnt*10)/TRY);
 		cnt++;
 		
 		if(cnt > TRY){
@@ -125,6 +130,7 @@ public class Generator{
 	}
 	
 	}while(!isExit);
+	finished = true;
 	draw();
 	}
 	
@@ -185,6 +191,7 @@ public class Generator{
 	};
 	
 	Main.mDrawingFrame.add(Main.mDrawingPanel);
+	Main.mDrawingFrame.setVisible(true);
 	Main.mDrawingPanel.repaint();
 	
 }
@@ -378,75 +385,34 @@ private void nextField(int tX, int tY, int pos, int n, int len){
 	
 }
 	
-		
+
+public boolean isFinished(){
+	return finished;
+}
+
+public Field[][] getBoard(){
+	return board;
+}
+
 private int abs(int a)	
 {	
 	if(a >= 0)
 		return a;
 	else
 	return -a;
+}
+
+
+
+public int getWidth() {
+	return w;
+}
+
+
+
+public int getHeight() {
+	return h;
 }	
-
-
-//OLD GENERATOR - NOT WORKING
-//while(true){
-/*
-for(int i = 0; i < 20; i++){	
-
-	
-if(board[tX][tY].getLeft() == false){
-
-if(tX<= 0){
-
-	board[tX][tY].setLeft(true);
-	board[tX][tY].setRight(false);
-continue;	
-}
-	
-board[tX-1][tY] = Field.generateNext(board[tX][tY]);	
-tX = tX - 1;	
-
-}else if(board[tX][tY].getUp() == false){
-
-	if(tY >= h){
-		board[tX][tY].setUp(true);
-		board[tX][tY].setDown(false);
-		continue;
-	}
-
-	
-board[tX][tY+1] = Field.generateNext(board[tX][tY]);	
-tY = tY + 1;
-
-}else if(board[tX][tY].getRight() == false){
-if(tX >= w){
-	board[tX][tY].setLeft(false);
-	board[tX][tY].setRight(true);
-	continue;
-}
-board[tX+1][tY] = Field.generateNext(board[tX][tY]);	
-tX = tX + 1;	
-		
-}else if(board[tX][tY].getDown() == false){
-
-	if(tY <= 0){
-		board[tX][tY].setDown(true);
-		board[tX][tY].setUp(false);
-		continue;
-	}	
-	
-board[tX][tY-1] = Field.generateNext(board[tX][tY]);	
-tY = tY - 1;
-		
-}
-
-if(tX == h || tX == 0 || tY == 0 || tY == w){
-	break;
-}
-
-
-} 
-*/
 
 
 

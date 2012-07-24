@@ -2,6 +2,7 @@ package com.bugfullabs.mazegen;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterJob;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -38,6 +39,7 @@ public class Main{
 	public static JButton mButtonStart;
 	public static JMenu mMenuFile;
 	public static JMenuItem mHelp;
+	public static JMenuItem mPrint;
 	public static JMenuItem mAbout;
 	public static JProgressBar mProgress;
 	public static JTextField mTFDiff;
@@ -74,7 +76,30 @@ public class Main{
 	    mDrawingFrame.setName("Maze");
 		
 		initGUI();
-	   
+		
+		mPrint.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+			if(gen != null){
+			if(gen.isFinished()){	
+			PrinterJob printerJob = PrinterJob.getPrinterJob();
+			
+			printerJob.setPrintable(new PrintablePage(gen.getBoard(), gen.getWidth(), gen.getHeight()));
+			
+			if(printerJob.printDialog()){
+				try{
+				printerJob.print();	
+				}catch(Exception PrintException){
+					PrintException.printStackTrace();
+				}
+				
+			}
+			
+			}
+			}	
+			}
+		});
+		
 	    mButtonStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -87,21 +112,27 @@ public class Main{
 				mMinSteps = Integer.parseInt(mTFDiff.getText());
 				mDrawingFrame.setLocation(180, 0);
 				mDrawingFrame.setSize(2*MARGIN + (mWidth * FIELD_WIDTH), 2*MARGIN + (mHeight * FIELD_HEIGHT));
-				mDrawingFrame.setVisible(true);
+				
 				
 				mButtonStart.setText("Stop!");
 				
-				gen = new Generator(mWidth, mHeight, mMinSteps, 50);
-				gen.start();
+				new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+					gen = new Generator(mWidth, mHeight, mMinSteps, 50);
+					gen.start();			
+					}
+				}).start();
+				
+				
 				
 				running = true;
 				}catch (NumberFormatException e){
 					//TODO: Warning Dialog
 				}
 				
-			}else{
-			
-			//TODO: Stop option	
+			}else{	
 			running = false;
 			mDrawingFrame.remove(mDrawingPanel);
 			mButtonStart.setText("Start!");
@@ -136,6 +167,11 @@ public class Main{
 						mExit = new JMenuItem();
 						mMenuFile.add(mExit);
 						mExit.setText("Exit");
+					
+						mPrint = new JMenuItem();
+						mMenuFile.add(mPrint);
+						mPrint.setText("Print");
+					
 					}
 				}
 				
